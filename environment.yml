@@ -97,7 +97,7 @@ dependencies:
     - einops==0.3.0
     - manopth==0.0.1
     - mxnet==1.6.0
-    - progress==1.5
+    - ou
     - torch==1.2.0
     - transforms3d==0.3.1
     - git+https://github.com/hassony2/manopth.git

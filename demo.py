@@ -8,13 +8,14 @@ import matplotlib.pyplot as plt
 from utils import vis
 from op_pso import PSO
 import open3d
+np.float = np.float64
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-_mano_root = 'mano/models'
+_mano_root = r'C:\Users\Meghna\Downloads\mano_v1_2\models'
 
 module = detnet().to(device)
 print('load model start')
-check_point = torch.load('new_check_point/ckp_detnet_83.pth', map_location=device)
+check_point = torch.load('model/detnet/ckp_detnet_106.pth', map_location=device)
 model_state = module.state_dict()
 state = {}
 for k, v in check_point.items():
@@ -51,7 +52,7 @@ view_mat = np.array([[1.0, 0.0, 0.0],
                      [0.0, -1.0, 0],
                      [0.0, 0, -1.0]])
 mesh = open3d.geometry.TriangleMesh()
-hand_verts, j3d_recon = mano(pose0, shape.float())
+hand_verts, j3d_recon = mano(pose0, shape.float)
 mesh.triangles = open3d.utility.Vector3iVector(mano.th_faces)
 hand_verts = hand_verts.clone().detach().cpu().numpy()[0]
 mesh.vertices = open3d.utility.Vector3dVector(hand_verts)
@@ -117,9 +118,9 @@ while (cap.isOpened()):
     j3d_pre_process = pre_joints * ratio  # template, m
     j3d_pre_process = j3d_pre_process - j3d_pre_process[0] + template[0]
     pose_R = AIK.adaptive_IK(template, j3d_pre_process)
-    pose_R = torch.from_numpy(pose_R).float()
+    pose_R = torch.from_numpy(pose_R)
     #  reconstruction
-    hand_verts, j3d_recon = mano(pose_R, opt_tensor_shape.float())
+    hand_verts, j3d_recon = mano(pose_R.float(), opt_tensor_shape.float())
     mesh.triangles = open3d.utility.Vector3iVector(mano.th_faces)
     hand_verts = hand_verts.clone().detach().cpu().numpy()[0]
     hand_verts = mesh_fliter.process(hand_verts)
